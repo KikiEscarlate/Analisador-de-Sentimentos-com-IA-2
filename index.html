@@ -402,6 +402,7 @@
                 <strong>Tarefa:</strong> Análise de Sentimentos<br><br>
                 Este modelo utiliza inteligência artificial para entender o contexto e nuances da linguagem,
                 retornando o sentimento identificado (POSITIVO, NEGATIVO ou NEUTRO) junto com o nível de confiança da análise.
+                Funciona completamente no navegador através da API do Hugging Face.
             </p>
         </div>
     </div>
@@ -420,43 +421,6 @@
         
         // Variável para controlar se o modelo está carregado
         let modeloCarregado = false;
-        
-        // Função para fazer requisição com retry e tratamento de CORS
-        async function fazerRequisicaoAPI(texto, tentativas = 3) {
-            for (let i = 0; i < tentativas; i++) {
-                try {
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ inputs: texto })
-                    });
-                    
-                    return response;
-                } catch (error) {
-                    // Se for erro de CORS na última tentativa, usar proxy
-                    if (i === tentativas - 1 && (error.message.includes('CORS') || error.message.includes('Failed to fetch'))) {
-                        // Tentar com proxy CORS público como fallback
-                        const proxyURL = `https://cors-anywhere.herokuapp.com/${API_URL}`;
-                        try {
-                            return await fetch(proxyURL, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ inputs: texto })
-                            });
-                        } catch (proxyError) {
-                            throw error; // Lançar erro original
-                        }
-                    }
-                    // Aguardar antes de tentar novamente
-                    await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-                }
-            }
-            throw new Error('Falha ao conectar com a API após múltiplas tentativas');
-        }
 
         async function analisarSentimento() {
             const texto = document.getElementById('texto').value.trim();
@@ -480,8 +444,14 @@
             btnAnalisar.disabled = true;
 
             try {
-                // Fazer requisição à API do Hugging Face com tratamento de erros
-                const response = await fazerRequisicaoAPI(texto);
+                // Fazer requisição à API do Hugging Face
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ inputs: texto })
+                });
 
                 if (!response.ok) {
                     // Se a API ainda está carregando o modelo
@@ -520,10 +490,10 @@
             } catch (error) {
                 console.error('Erro:', error);
                 
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.message.includes('CORS')) {
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                     mostrarErro('❌ Erro de conexão. Verifique sua conexão com a internet e tente novamente.');
-                } else if (error.message.includes('503') || error.message.includes('carregando')) {
-                    // Já tratado acima
+                } else if (error.message.includes('CORS')) {
+                    mostrarErro('❌ Erro de CORS. Tente novamente ou use uma versão local do servidor.');
                 } else {
                     mostrarErro(`❌ Erro ao analisar texto: ${error.message}. Tente novamente em alguns segundos.`);
                 }
@@ -584,3 +554,4 @@
     </script>
 </body>
 </html>
+

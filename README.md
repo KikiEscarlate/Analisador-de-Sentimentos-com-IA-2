@@ -10,12 +10,28 @@ Interface web moderna para análise de sentimentos usando modelo Transformer pr�
 
 Este projeto converte um analisador de sentimentos em Python (console) para uma interface web moderna e intuitiva. Utiliza o modelo `pysentimiento/bertweet-pt-sentiment` para análise de sentimentos em textos em português, classificando como POSITIVO, NEGATIVO ou NEUTRO.
 
-## 📋 Requisitos
+## 🌐 Versões Disponíveis
 
+Este projeto possui **duas versões**:
+
+### 🚀 Versão GitHub Pages (Recomendada - Sem Requisitos!)
+
+**Funciona completamente no navegador**, sem necessidade de servidor ou instalação!
+
+- ✅ Usa a API pública do Hugging Face
+- ✅ Funciona diretamente no GitHub Pages
+- ✅ Sem necessidade de Python ou servidor
+- ✅ Veja o guia completo: [`GITHUB_PAGES.md`](GITHUB_PAGES.md)
+
+**Para usar:** Basta abrir o arquivo `index.html` no navegador ou publicar no GitHub Pages!
+
+### 💻 Versão com Servidor Local (Opcional)
+
+**Requisitos:**
 - Python 3.8 ou superior
 - pip (gerenciador de pacotes Python)
 
-## 🚀 Como usar
+## 🚀 Como usar (Versão com Servidor)
 
 ### 1. Instalar dependências
 
@@ -62,10 +78,12 @@ Ou abra diretamente o arquivo `analisador_sentimentos.html` no navegador (mas ce
 
 ## 📁 Estrutura de arquivos
 
-- `analisador_sentimentos.html` - Interface web (HTML/CSS/JavaScript)
-- `servidor.py` - Servidor Flask com a lógica de análise
-- `requirements.txt` - Dependências do projeto
+- `index.html` - **Versão para GitHub Pages** (funciona sem servidor)
+- `analisador_sentimentos.html` - Interface web original (pode usar servidor)
+- `servidor.py` - Servidor Flask com a lógica de análise (opcional)
+- `requirements.txt` - Dependências do projeto (apenas para versão com servidor)
 - `i_a_de_cópia_de_nicolau_analisador_de_sentimentos (2).py` - Código original do console
+- `GITHUB_PAGES.md` - Guia completo para publicar no GitHub Pages
 
 ## 🔧 Solução de problemas
 
@@ -132,28 +150,30 @@ O repositório inclui:
 - ✅ Código original (`i_a_de_cópia_de_nicolau_analisador_de_sentimentos (2).py`)
 - ✅ `.gitignore` configurado
 
-## 🚀 Deploy (Opcional)
+## 🚀 Deploy Online
 
-Para disponibilizar online, você pode usar serviços como:
+### GitHub Pages (Recomendado - Gratuito!)
+
+A versão `index.html` funciona perfeitamente no GitHub Pages sem necessidade de servidor.
+
+**Veja o guia completo:** [`GITHUB_PAGES.md`](GITHUB_PAGES.md)
+
+**Passos rápidos:**
+1. Publique o código no GitHub
+2. Vá em Settings → Pages
+3. Selecione branch `main` e pasta `/ (root)`
+4. Seu site estará em `https://SEU_USUARIO.github.io/SEU_REPOSITORIO/`
+
+### Outras Opções de Deploy
+
+Para a versão com servidor Flask, você pode usar:
 
 - **Heroku**: Deploy gratuito de aplicações Flask
 - **Railway**: Deploy simples e rápido
 - **Render**: Alternativa gratuita ao Heroku
 - **PythonAnywhere**: Hospedagem Python gratuita
 
-### Exemplo para Heroku
-
-1. Crie um arquivo `Procfile` com:
-   ```
-   web: python servidor.py
-   ```
-
-2. Crie um arquivo `runtime.txt` com:
-   ```
-   python-3.11.0
-   ```
-
-3. Siga o guia de deploy do Heroku
+Os arquivos `Procfile` e `runtime.txt` já estão incluídos para facilitar o deploy.
 
 ## 👨‍💻 Autor
 
