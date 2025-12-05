@@ -419,6 +419,25 @@
         const MODELO_ID = "pysentimiento/bertweet-pt-sentiment";
         const API_URL = `https://api-inference.huggingface.co/models/${MODELO_ID}`;
         
+        // Token do Hugging Face (melhora a confiabilidade). Será salvo no navegador.
+        let HF_TOKEN = localStorage.getItem('HF_TOKEN') || '';
+
+        function solicitarToken() {
+            const token = prompt('Cole seu token do Hugging Face (vai ficar salvo apenas no seu navegador):');
+            if (token && token.trim()) {
+                HF_TOKEN = token.trim();
+                localStorage.setItem('HF_TOKEN', HF_TOKEN);
+            }
+        }
+
+        function obterHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            if (HF_TOKEN) {
+                headers['Authorization'] = `Bearer ${HF_TOKEN}`;
+            }
+            return headers;
+        }
+        
         // Variável para controlar se o modelo está carregado
         let modeloCarregado = false;
 
@@ -444,16 +463,25 @@
             btnAnalisar.disabled = true;
 
             try {
+                // Se não houver token, solicitar (opcional, mas recomendado)
+                if (!HF_TOKEN) {
+                    solicitarToken();
+                }
+
                 // Fazer requisição à API do Hugging Face
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: obterHeaders(),
                     body: JSON.stringify({ inputs: texto })
                 });
 
                 if (!response.ok) {
+                    // Autenticação necessária ou token inválido
+                    if (response.status === 401 || response.status === 403) {
+                        mostrarErro('🔒 É necessário um token do Hugging Face. Clique em OK para informar.');
+                        solicitarToken();
+                        return;
+                    }
                     // Se a API ainda está carregando o modelo
                     if (response.status === 503) {
                         const data = await response.json().catch(() => ({}));
